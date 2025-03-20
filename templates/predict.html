@@ -1,41 +1,30 @@
-{% extends "base.html" %}
-{% block content %}
-    <div class="card">
-        <div class="card-header bg-primary text-white">Upload Chest X-Ray</div>
-        <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="image" class="form-label">Upload X-ray Image</label>
-                    <input type="file" class="form-control" id="image" name="image" accept=".jpg,.jpeg,.png" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-    </div>
-    {% if predicted_class %}
-        <div class="card mt-4">
-            <div class="card-header bg-success text-white">Detection Results</div>
-            <div class="card-body">
-                <h5>Prediction: <span class="text-primary">{{ predicted_class }}</span></h5>
-                <h6>Confidence: <span class="text-success">{{ confidence }}%</span></h6>
-                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded X-Ray" class="result-img">
-                <h6>Probabilities:</h6>
-                <ul>
-                    {% for class_name, prob in probs.items() %}
-                        <li>{{ class_name }}: {{ prob }}%</li>
-                    {% endfor %}
-                </ul>
-                <a href="{{ url_for('generate_report', predicted_class=predicted_class, confidence=confidence, filename=filename) }}" class="btn btn-secondary">Download Report</a>
-                {% if predicted_class == 'COVID' %}
-                    <form method="POST" action="{{ url_for('notify_radiologist') }}" class="mt-3">
-                        <input type="hidden" name="predicted_class" value="{{ predicted_class }}">
-                        <input type="hidden" name="confidence" value="{{ confidence }}">
-                        <input type="hidden" name="filename" value="{{ filename }}">
-                        <p class="text-danger">COVID detected. Notify radiologist?</p>
-                        <button type="submit" class="btn btn-danger">Yes</button>
-                    </form>
-                {% endif %}
-            </div>
-        </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Predict</title>
+</head>
+<body>
+    <h1>Upload Chest X-Ray</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept=".jpg,.jpeg,.png" required>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>Detection Results</h2>
+    {% if error_type %}
+        <h3 style="color: red;">Image Upload Error</h3>
+        <p>{{ error_message }}</p>
+    {% elif predicted_class %}
+        <p>Prediction: {{ predicted_class }} (Confidence: {{ confidence }}%)</p>
+        <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded X-Ray" style="max-width: 300px;">
+        <h3>Probabilities:</h3>
+        <ul>
+            {% for class_name, prob in probs.items() %}
+                <li>{{ class_name }}: {{ prob }}%</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results to display. Please upload an image.</p>
     {% endif %}
-{% endblock %}
+    <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

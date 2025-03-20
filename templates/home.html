@@ -1,9 +1,14 @@
-
-{% extends "base.html" %}
-{% block content %}
-    <h1>Welcome to the COVID-19 Detection System</h1>
-    <p>Upload your X-ray/CT scan to check for COVID-19, Pneumonia, or Normal cases.</p>
-    <p>Our site automates the analysis, the system aims to enhance diagnostic efficiency, reduce workload for healthcare professionals, and increase diagnostic accuracy.</p>
-    <a href="{{ url_for('predict') }}" class="btn btn-primary">Get Started</a>
-{% endblock %}
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to X-Ray Prediction</h1>
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('predict') }}">Predict</a> | <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
+</body>
+</html>

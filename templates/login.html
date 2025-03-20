@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Login</h1>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Captcha: {{ captcha }} = </label>
+            <input type="number" class="form-control d-inline w-auto" name="captcha_answer" required>
+            <input type="hidden" name="captcha" value="{{ captcha }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+{% endblock %}

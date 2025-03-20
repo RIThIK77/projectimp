@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">Upload Chest X-Ray</div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload X-ray Image</label>
+                    <input type="file" class="form-control" id="image" name="image" accept=".jpg,.jpeg,.png" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% if predicted_class %}
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">Detection Results</div>
+            <div class="card-body">
+                <h5>Prediction: <span class="text-primary">{{ predicted_class }}</span></h5>
+                <h6>Confidence: <span class="text-success">{{ confidence }}%</span></h6>
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded X-Ray" class="result-img">
+                <h6>Probabilities:</h6>
+                <ul>
+                    {% for class_name, prob in probs.items() %}
+                        <li>{{ class_name }}: {{ prob }}%</li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('generate_report', predicted_class=predicted_class, confidence=confidence, filename=filename) }}" class="btn btn-secondary">Download Report</a>
+                {% if predicted_class == 'COVID' %}
+                    <form method="POST" action="{{ url_for('notify_radiologist') }}" class="mt-3">
+                        <input type="hidden" name="predicted_class" value="{{ predicted_class }}">
+                        <input type="hidden" name="confidence" value="{{ confidence }}">
+                        <input type="hidden" name="filename" value="{{ filename }}">
+                        <p class="text-danger">COVID detected. Notify radiologist?</p>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    <h2>Users</h2>
+    <a href="{{ url_for('export_data') }}" class="btn btn-primary">Export Users</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Role</th>
+                <th>Last Login</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name or 'N/A' }}</td>
+                    <td>{{ user.age or 'N/A' }}</td>
+                    <td>{{ user.gender or 'N/A' }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.last_login or 'N/A' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Predictions</h2>
+    <a href="{{ url_for('export_predictions') }}" class="btn btn-primary">Export predictions</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Filename</th>
+                <th>Predicted Class</th>
+                <th>Confidence</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pred in predictions %}
+                <tr>
+                    <td>{{ pred.id }}</td>
+                    <td>{{ pred.user_id }}</td>
+                    <td>{{ pred.filename }}</td>
+                    <td>{{ pred.predicted_class }}</td>
+                    <td>{{ pred.confidence }}%</td>
+                    <td>{{ pred.timestamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
